@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const emit = defineEmits(['onHandlePress'])
-const searchValue = defineModel<string>('')
+const searchValue = defineModel<string>()
 </script>
 <template>
   <div class="flex items-center border-b bg-slate-700 rounded-lg p-2">

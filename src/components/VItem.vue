@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FwbCard, FwbImg } from 'flowbite-vue'
+import { FwbCard, FwbImg, FwbHeading, FwbP } from 'flowbite-vue'
 </script>
 
 <template>
@@ -7,12 +7,12 @@ import { FwbCard, FwbImg } from 'flowbite-vue'
     <div class="w-full flex flex-col p-5">
       <FwbImg alt="item_image" src="" class="w-[250px] h-[250px]" />
       <div>
-        <p class="mb-2 text-2xl font-bold text-white">{{ 'название' }}</p>
-        <h2 class="mb-2 text-white font-bold text-2xl">{{ 'цена' }}</h2>
-        <p class="text-white">{{ 'Санкт-Петербург, Россия' }}</p>
-        <p class="font-normal text-gray-400">
+        <FwbHeading tag="h3">{{ 'название' }}</FwbHeading>
+        <FwbHeading tag="h5">{{ 'цена' }}</FwbHeading>
+        <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
+        <FwbP>
           {{ `Created On ${new Date().toLocaleDateString()}` }}
-        </p>
+        </FwbP>
       </div>
     </div>
   </FwbCard>
