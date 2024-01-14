@@ -1,9 +1,34 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import VItem from '@/components/VItem.vue'
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+  <div
+    class="grid justify-center xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4 p-2"
+  >
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+    <VItem />
+  </div>
 </template>
