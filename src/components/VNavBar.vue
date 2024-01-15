@@ -7,13 +7,14 @@ function onHandlePress(value: string) {
 }
 </script>
 <template>
-  <nav class="flex justify-between items-center border-b p-2">
+  <nav class="flex items-center justify-between p-2 border-b">
     <RouterLink to="/">
       <FwbButton color="default">Home</FwbButton>
     </RouterLink>
     <VSearch class="w-1/3" @onHandlePress="onHandlePress" />
     <RouterLink to="/ws">
       <FwbButton color="default">WS</FwbButton>
+      <!-- <FwbButton v-else color="default">Login</FwbButton> -->
     </RouterLink>
   </nav>
 </template>
