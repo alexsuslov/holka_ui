@@ -2,12 +2,15 @@
 import VItem from '@/components/VItem.vue'
 import router from '@/router'
 import { useStore } from '@/stores/store'
+import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 
 const store = useStore()
-
+const { getItemsLength } = storeToRefs(store)
 onMounted(() => {
-  store.fetchItems()
+  if (getItemsLength.value == 0) {
+    store.fetchItems()
+  }
 })
 </script>
 <template>

@@ -16,8 +16,13 @@ export interface IState {
         count: number
         items: Item[]
     },
+    ownerItems: {
+        count: number
+        items: Item[]
+    },
     user: {
         isLoggedIn: boolean,
-        token: string
+        token: string,
+        userId?: string
     }
 }

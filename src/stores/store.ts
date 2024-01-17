@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { IState, Item } from './interfaces'
+import router from '@/router'
 
 export const useStore = defineStore('state', {
   state: (): IState => ({
@@ -7,13 +8,20 @@ export const useStore = defineStore('state', {
       count: 0,
       items: []
     },
+    ownerItems: {
+      count: 0,
+      items: []
+    },
     user: {
       isLoggedIn: Boolean(sessionStorage.getItem('token')),
-      token: sessionStorage.getItem('token') ?? ''
+      token: sessionStorage.getItem('token') ?? '',
+      userId: '',
     }
   }),
   getters: {
     isLoggedIn: (state) => { return state.user.isLoggedIn },
+    getItemsLength: (state) => { return state.items.count },
+    getOwnerItemsLength: (state) => { return state.ownerItems.count }
   },
   actions: {
     async login({ username, password }: { username: string, password: string }) {
@@ -26,22 +34,41 @@ export const useStore = defineStore('state', {
           method: 'POST',
           body: new URLSearchParams({ user: username, pass: password })
         })
-        const res = await response.text();
-        console.log({ res });
+        const res = await response.json();
         this.user.isLoggedIn = true
-        sessionStorage.setItem('token', res)
+        this.user.userId = res.user_id
+        this.user.token = res.token
+        sessionStorage.setItem('token', res.token)
+        sessionStorage.setItem('owner', res.user_id)
       } catch (err) {
         console.error(err)
       }
+    },
+    logout() {
+      this.user = { isLoggedIn: false, token: "" }
+      sessionStorage.clear()
+      router.push('/')
     },
     async fetchItems() {
       try {
         const items = await fetch('/api/v1/items', {
           headers: {
-            "X-Auth-Token": this.user.token
+            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
         })
         this.items = await items.json()
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    async fetchMyItems() {
+      try {
+        const items = await fetch(`/api/v1/items?owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
+          headers: {
+            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
+          }
+        })
+        this.ownerItems = await items.json()
       } catch (err) {
         console.error(err)
       }
