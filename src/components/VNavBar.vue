@@ -8,7 +8,9 @@ function onHandlePress(value: string) {
 const loggedIn = true
 </script>
 <template>
-  <nav class="flex items-center justify-between p-2 border-b">
+  <nav
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-2 bg-white border-b"
+  >
     <RouterLink to="/">
       <FwbButton color="default">Home</FwbButton>
     </RouterLink>

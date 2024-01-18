@@ -8,13 +8,15 @@ const isShowModal = ref<boolean>(false)
 
 function showModal() {
   isShowModal.value = true
+  document.body.style.overflow = 'hidden'
 }
 function closeModal() {
   isShowModal.value = false
+  document.body.style.overflow = 'initial'
 }
 </script>
 <template>
-  <FwbButton color="green" class="absolute bottom-0 right-0 m-4" @click="showModal">
+  <FwbButton color="green" class="fixed bottom-0 right-0 m-4" @click="showModal">
     <div class="flex items-center w-full gap-2">
       Добавить товар
       <PlusIcon class="w-5 h-5" />

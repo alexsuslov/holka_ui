@@ -73,9 +73,9 @@ export const useStore = defineStore('state', {
         console.error(err)
       }
     },
-    addItem(itemData: Omit<Item, "views" | "id" | "images">) {
+    async addItem(itemData: Omit<Item, "views" | "id" | "images">) {
       try {
-        fetch('/api/v1/items', {
+        const result = await fetch('/api/v1/items', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -83,6 +83,8 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify(itemData)
         })
+        const r = await result.json()
+        sessionStorage.setItem('newItemId', r.id)
       } catch (err) {
         console.error(err)
       }
@@ -97,23 +99,30 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify({ images })
         })
+        sessionStorage.clearItem('newItemId')
       } catch (err) {
         console.error(err)
       }
     },
     uploadImages(id: string, files: FileList) {
       try {
+        console.log(files);
+
         const formData = new FormData();
-        Array.from(files).forEach((file) => {
-          formData.append("file", file)
-        })
-        fetch('/api/v1/upload', {
-          method: 'POST',
-          headers: {
-            "X-Auth-Token": this.user.token
-          },
-          body: formData
-        }).then(res => this.addImagesToItem(id, res.key))
+        // Array.from(files).forEach((file) => {
+        formData.append("file", Array.from(files)[0])
+        // })
+
+        console.log({ formData });
+
+        // fetch('/api/v1/upload', {
+        //   method: 'POST',
+        //   headers: {
+        //     "X-Auth-Token": this.user.token
+        //   },
+        //   body: formData
+        // }).then(res => res.json()).then(r => console.log(id, r))
+        //this.addImagesToItem(id, files)
       } catch (err) {
         console.error(err)
       }
