@@ -14,15 +14,16 @@ export interface Item {
 export interface IState {
     items: {
         count: number
-        items: Item[]
+        items: Item[] | []
     },
     ownerItems: {
         count: number
-        items: Item[]
+        items: Item[] | []
     },
     user: {
         isLoggedIn: boolean,
         token: string,
         userId?: string
-    }
+    },
+    selectedItem: Item | {}
 }

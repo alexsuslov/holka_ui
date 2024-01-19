@@ -16,7 +16,8 @@ export const useStore = defineStore('state', {
       isLoggedIn: Boolean(sessionStorage.getItem('token')),
       token: sessionStorage.getItem('token') ?? '',
       userId: '',
-    }
+    },
+    selectedItem: {}
   }),
   getters: {
     isLoggedIn: (state) => { return state.user.isLoggedIn },
@@ -24,6 +25,9 @@ export const useStore = defineStore('state', {
     getOwnerItemsLength: (state) => { return state.ownerItems.count }
   },
   actions: {
+    selectItem(item: Item) {
+      this.selectedItem = item;
+    },
     async login({ username, password }: { username: string, password: string }) {
       try {
         const response = await fetch('http://192.168.31.100:3000/auth', {
@@ -99,21 +103,25 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify({ images })
         })
-        sessionStorage.clearItem('newItemId')
+        // sessionStorage.clearItem('newItemId')
       } catch (err) {
         console.error(err)
       }
     },
-    uploadImages(id: string, files: FileList) {
+    uploadImages(id: string, file: File) {
       try {
-        console.log(files);
-
+        const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
+        console.log(file);
+        const blob = new Blob([file], { type: 'image/png' })
+        console.log(blob);
         const formData = new FormData();
         // Array.from(files).forEach((file) => {
-        formData.append("file", Array.from(files)[0])
+        formData.append("file", blob)
+        // formData.append("text", '123')
         // })
 
-        console.log({ formData });
+        console.log(formData.has('text'));
+        console.log(formData.has('file'));
 
         // fetch('/api/v1/upload', {
         //   method: 'POST',
@@ -121,8 +129,8 @@ export const useStore = defineStore('state', {
         //     "X-Auth-Token": this.user.token
         //   },
         //   body: formData
-        // }).then(res => res.json()).then(r => console.log(id, r))
-        //this.addImagesToItem(id, files)
+        // }).then(res => res.json()).then(r => this.addImagesToItem(id, [r.Key]))
+
       } catch (err) {
         console.error(err)
       }

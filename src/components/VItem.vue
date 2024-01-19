@@ -1,27 +1,32 @@
 <script setup lang="ts">
-import type { Item } from '@/stores/interfaces'
-import { FwbCard, FwbHeading, FwbP, FwbCarousel } from 'flowbite-vue'
-
-const props = defineProps(['item'])
-
-// const pictures = props.item.images.map((imageUrl, i) => {
-//   console.log(imageUrl)
-//   return { src: imageUrl, alt: `item_image_${i}` }
-// })
-// function makeImage(file: File) {
-//   return URL.createObjectURL(file)
-// }
+import { FwbCard, FwbHeading, FwbP, FwbImg } from 'flowbite-vue'
+import { PhotoIcon } from '@heroicons/vue/24/solid'
+const { item } = defineProps(['item'])
+const imageUrl = encodeURI(`http://192.168.31.100:3000/media/${item?.images?.[0]}/1.png`)
 </script>
 <template>
-  <FwbCard href="#">
-    <div class="flex flex-col w-auto p-5">
-      <!-- <FwbCarousel :pictures="pictures" class="w-[250px] h-[250px]" /> -->
+  <FwbCard>
+    <div class="flex flex-col w-auto p-3">
+      <div class="flex justify-center">
+        <div
+          v-if="item?.images?.length"
+          class="flex rounded-lg justify-center items-center w-full h-[250px] bg-slate-500"
+        >
+          <FwbImg :src="imageUrl" class="w-auto h-auto" />
+        </div>
+        <div
+          v-else
+          class="bg-slate-500 w-full h-[250px] rounded-lg flex justify-center items-center"
+        >
+          <PhotoIcon class="w-10 h-10 text-white" />
+        </div>
+      </div>
       <div>
-        <FwbHeading tag="h3">{{ item.title }}</FwbHeading>
+        <FwbHeading tag="h3">{{ item.title ?? '_' }}</FwbHeading>
         <FwbHeading tag="h5">{{ item.price }} Руб</FwbHeading>
         <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
         <FwbP>
-          {{ `Created On ${new Date(item.created_on).toLocaleDateString()}` }}
+          {{ `Товар создан ${new Date(item.created_on).toLocaleDateString()}` }}
         </FwbP>
       </div>
     </div>

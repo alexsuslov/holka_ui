@@ -61,7 +61,7 @@ function handleAddImages() {
 }
 
 function onSubmit() {
-  store.uploadImages(sessionStorage.getItem('newItemId'), files)
+  store.uploadImages('65a6b60efb4e126d47016b05', files.value[0])
   // emit('close')
 }
 
@@ -92,7 +92,7 @@ watchEffect(() => {
         <FwbHeading tag="h4">Добавление товара</FwbHeading>
       </template>
       <template #body>
-        <div class="flex flex-col max-h-full gap-2 overflow-y-auto">
+        <div class="flex flex-col max-h-full gap-2">
           <FwbInput
             v-model="itemData.title"
             placeholder="введите название товара"
@@ -133,120 +133,8 @@ watchEffect(() => {
             </FwbBadge>
           </div>
           <div>
-            <FwbButton v-if="!isAddImagesButtonDisabled" type="button" @click="handleAddImages"
-              >Добавить фотографии
-            </FwbButton>
-            <FwbButton v-else disabled>Добавить фотографии </FwbButton>
-          </div>
-          <div v-show="isAddImagesButtonVisible">
-            <FwbFileInput label="Загрузить фотографии" v-model="files" multiple />
-            <div v-show="files && files.length > 0" class="flex flex-row flex-wrap gap-2">
-              <div v-for="(file, i) in files" :key="i">
-                <FwbP>{{ file.name }}</FwbP>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <FwbInput
-            v-model="itemData.title"
-            placeholder="введите название товара"
-            label="Название"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <FwbInput
-            v-model="itemData.price"
-            type="number"
-            placeholder="введите цену товара"
-            label="Цена"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <FwbTextarea
-            v-model="itemData.info"
-            placeholder="введите описание товара"
-            label="Описание"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <div class="flex gap-2">
-            <FwbInput
-              v-model="itemData.tag"
-              placeholder="введите тег"
-              :disabled="isAddImagesButtonVisible"
-              class="w-full"
-            />
-            <FwbButton type="button" color="green" @click="handleAddTag">
-              <PlusIcon class="w-5 h-5" />
-            </FwbButton>
-          </div>
-          <div :v-show="itemData.tags.length > 0" class="flex flex-row flex-wrap gap-2">
-            <FwbBadge v-for="tag in itemData.tags" :key="tag" @click="deleteTag(tag)">
-              {{ tag }}
-              <XMarkIcon class="w-5 h-5 text-red-500" />
-            </FwbBadge>
-          </div>
-          <div>
-            <FwbButton v-if="!isAddImagesButtonDisabled" type="button" @click="handleAddImages"
-              >Добавить фотографии
-            </FwbButton>
-            <FwbButton v-else disabled>Добавить фотографии </FwbButton>
-          </div>
-          <div v-show="isAddImagesButtonVisible">
-            <FwbFileInput label="Загрузить фотографии" v-model="files" multiple />
-            <div v-show="files && files.length > 0" class="flex flex-row flex-wrap gap-2">
-              <div v-for="(file, i) in files" :key="i">
-                <FwbP>{{ file.name }}</FwbP>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <FwbInput
-            v-model="itemData.title"
-            placeholder="введите название товара"
-            label="Название"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <FwbInput
-            v-model="itemData.price"
-            type="number"
-            placeholder="введите цену товара"
-            label="Цена"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <FwbTextarea
-            v-model="itemData.info"
-            placeholder="введите описание товара"
-            label="Описание"
-            required
-            :disabled="isAddImagesButtonVisible"
-          />
-          <div class="flex gap-2">
-            <FwbInput
-              v-model="itemData.tag"
-              placeholder="введите тег"
-              :disabled="isAddImagesButtonVisible"
-              class="w-full"
-            />
-            <FwbButton type="button" color="green" @click="handleAddTag">
-              <PlusIcon class="w-5 h-5" />
-            </FwbButton>
-          </div>
-          <div :v-show="itemData.tags.length > 0" class="flex flex-row flex-wrap gap-2">
-            <FwbBadge v-for="tag in itemData.tags" :key="tag" @click="deleteTag(tag)">
-              {{ tag }}
-              <XMarkIcon class="w-5 h-5 text-red-500" />
-            </FwbBadge>
-          </div>
-          <div>
-            <FwbButton v-if="!isAddImagesButtonDisabled" type="button" @click="handleAddImages"
-              >Добавить фотографии
-            </FwbButton>
-            <FwbButton v-else disabled>Добавить фотографии </FwbButton>
+            <FwbButton type="button" @click="handleAddImages">Добавить фотографии </FwbButton>
+            <!-- <FwbButton v-else disabled>Добавить фотографии </FwbButton> -->
           </div>
           <div v-show="isAddImagesButtonVisible">
             <FwbFileInput label="Загрузить фотографии" v-model="files" multiple />
