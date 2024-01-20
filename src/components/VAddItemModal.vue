@@ -61,7 +61,7 @@ function handleAddImages() {
 }
 
 function onSubmit() {
-  store.uploadImages('65a6b60efb4e126d47016b05', files.value[0])
+  store.uploadImages('65a6b60efb4e126d47016b05', files.value)
   // emit('close')
 }
 

@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import type { IState } from '@/stores/interfaces'
+//@ts-nocheck
 import { useStore } from '@/stores/store'
-import { FwbHeading, FwbP, FwbCarousel } from 'flowbite-vue'
+import { FwbCarousel } from 'flowbite-vue'
 
-const { selectedItem }: IState = useStore()
+const { selectedItem } = useStore()
 
-const pictures = selectedItem?.images?.map((imageUrl: string, i: number) => {
-  return {
-    src: encodeURI(`http://192.168.31.100:3000/media/${imageUrl}/1.png`),
-    alt: `item_image_${i}`
-  }
-})
+const pictures =
+  selectedItem.images &&
+  selectedItem?.images?.map((imageUrl: string, i: number) => {
+    return {
+      src: encodeURI(`http://192.168.31.100:3000/media/${imageUrl}/1.png`),
+      alt: `item_image_${i}`
+    }
+  })
 </script>
 <template>
   <div>

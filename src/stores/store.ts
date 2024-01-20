@@ -108,29 +108,25 @@ export const useStore = defineStore('state', {
         console.error(err)
       }
     },
-    uploadImages(id: string, file: File) {
+    uploadImages(id: string, files: FileList) {
       try {
-        const allowedFileTypes = ["image/png", "image/jpeg", "image/gif"];
-        console.log(file);
-        const blob = new Blob([file], { type: 'image/png' })
-        console.log(blob);
+        console.log(files);
         const formData = new FormData();
-        // Array.from(files).forEach((file) => {
-        formData.append("file", blob)
-        // formData.append("text", '123')
-        // })
+        Array.from(files).forEach((file) => {
+          const blob = new Blob([file], { type: file.type })
+          console.log(blob);
+          formData.append("file", blob)
+        })
 
-        console.log(formData.has('text'));
         console.log(formData.has('file'));
 
-        // fetch('/api/v1/upload', {
-        //   method: 'POST',
-        //   headers: {
-        //     "X-Auth-Token": this.user.token
-        //   },
-        //   body: formData
-        // }).then(res => res.json()).then(r => this.addImagesToItem(id, [r.Key]))
-
+        fetch('/api/v1/upload', {
+          method: 'POST',
+          headers: {
+            "X-Auth-Token": this.user.token
+          },
+          body: formData
+        }).then(res => res.json()).then(r => this.addImagesToItem(id, r.Key))
       } catch (err) {
         console.error(err)
       }

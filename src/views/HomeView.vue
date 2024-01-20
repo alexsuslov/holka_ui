@@ -16,7 +16,6 @@ onMounted(() => {
 
 function handleItemClick(item: Item) {
   router.push(`/items/${item.id}`)
-  console.log(item)
   store.selectItem(item)
 }
 </script>

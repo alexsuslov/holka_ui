@@ -4,7 +4,7 @@ import { FwbCard, FwbHeading, FwbInput, FwbButton } from 'flowbite-vue'
 import { reactive } from 'vue'
 
 const store = useStore()
-const userData = reactive({ username: 'admin', password: 'ZHieGEGj' })
+const userData = reactive({ username: '', password: '' })
 
 function handleLogin() {
   store.login(userData)
