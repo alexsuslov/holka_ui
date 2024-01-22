@@ -2,7 +2,7 @@
 import { FwbCard, FwbHeading, FwbP, FwbImg } from 'flowbite-vue'
 import { PhotoIcon } from '@heroicons/vue/24/solid'
 const { item } = defineProps(['item'])
-const imageUrl = encodeURI(`http://192.168.31.100:3000/media/${item?.images?.[0]}/1.png`)
+const imageUrl = encodeURI(`http://192.168.31.100:3000${item?.images?.[0]}`)
 </script>
 <template>
   <FwbCard>
@@ -12,7 +12,7 @@ const imageUrl = encodeURI(`http://192.168.31.100:3000/media/${item?.images?.[0]
           v-if="item?.images?.length"
           class="flex rounded-lg justify-center items-center w-full h-[250px] bg-slate-500"
         >
-          <FwbImg :src="imageUrl" class="w-auto h-auto" />
+          <FwbImg :src="imageUrl" class="max-w-full max-h-full" />
         </div>
         <div
           v-else

@@ -6,8 +6,8 @@ export interface Item {
     price: number
     tags: string[]
     views: number
-    created_on: string
-    updated_on: string
+    created_on?: string
+    updated_on?: string
     owner: string | null
 }
 

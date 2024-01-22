@@ -9,7 +9,7 @@ const loggedIn = true
 </script>
 <template>
   <nav
-    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-2 bg-white border-b"
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-2 bg-white border-b border-slate-500 dark:bg-slate-900"
   >
     <RouterLink to="/">
       <FwbButton color="default">Home</FwbButton>

@@ -12,24 +12,25 @@ import {
 import { reactive, watchEffect, ref, type Ref } from 'vue'
 import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
 import { useStore } from '@/stores/store'
+import { storeToRefs } from 'pinia'
 import type { Item } from '@/stores/interfaces'
-import VButton from './VButton.vue'
 
 const emit = defineEmits(['close', 'addItem'])
 defineProps(['label', 'isShowModal', 'variant'])
 const store = useStore()
+const { selectedItem } = storeToRefs(store)
 const isAddImagesButtonDisabled = ref(true)
 const isAddItemButtonDisabled = ref(true)
 const isAddImagesButtonVisible = ref(false)
 const files: Ref<FileList | never[]> = ref([])
-
-const itemData: Item & { tag?: string } = reactive({
+const itemData: Item & { tag?: '' } = reactive({
   title: '',
   tag: '',
   tags: [],
   price: NaN,
   info: '',
-  images: []
+  images: [],
+  ...selectedItem.value
 })
 
 function handleAddTag() {
@@ -45,7 +46,6 @@ function deleteTag(tag: string) {
   const newTags = itemData.tags?.filter((v) => v !== tag)
   itemData.tags = newTags
 }
-
 function onFileChanged($event: Event) {
   const target = $event.target as HTMLInputElement
   if (target && target.files) {
@@ -55,11 +55,11 @@ function onFileChanged($event: Event) {
 
 function handleAddImages() {
   delete itemData.tag
+  delete itemData.updated_on
   isAddImagesButtonVisible.value = true
   isAddImagesButtonDisabled.value = true
-  store.addItem(itemData)
+  store.editItem(itemData)
 }
-
 const itemImages: string[] = []
 
 async function addImage(id: string, file: File, promise: Promise<Response>) {
@@ -67,15 +67,13 @@ async function addImage(id: string, file: File, promise: Promise<Response>) {
   const result = await res.json()
   const { Key } = result
   itemImages.push(`/media/${Key}/${file.name}`)
+  console.log(itemImages)
+
   store.addImagesToItem(id, itemImages)
 }
 
 function onSubmit() {
-  if (sessionStorage.getItem('newItemId')) {
-    Array.from(files.value).forEach((file: File) =>
-      addImage(sessionStorage.getItem('newItemId') || '', file, store.uploadImage(file))
-    )
-  }
+  Array.from(files.value).forEach((file) => addImage(itemData.id, file, store.uploadImage(file)))
   emit('close')
 }
 
@@ -103,7 +101,7 @@ watchEffect(() => {
   <form id="my-form" @submit.prevent="onSubmit">
     <FwbModal @close="emit('close')" size="5xl">
       <template #header>
-        <FwbHeading tag="h4">Добавить товар</FwbHeading>
+        <FwbHeading tag="h4">Изменить товар</FwbHeading>
       </template>
       <template #body>
         <div class="flex flex-col max-h-full gap-2">
@@ -147,13 +145,10 @@ watchEffect(() => {
             </FwbBadge>
           </div>
           <div>
-            <VButton
-              :disabled="isAddImagesButtonDisabled"
-              primary
-              type="button"
-              @click="handleAddImages"
-              >Добавить фотографии</VButton
-            >
+            <FwbButton v-if="!isAddImagesButtonDisabled" type="button" @click="handleAddImages"
+              >Добавить фотографии
+            </FwbButton>
+            <FwbButton v-else disabled>Добавить фотографии </FwbButton>
           </div>
           <div v-show="isAddImagesButtonVisible">
             <input
@@ -174,7 +169,7 @@ watchEffect(() => {
       <template #footer>
         <div class="flex justify-between">
           <FwbButton @click="emit('close')" color="red">Отмена</FwbButton>
-          <VButton :disabled="isAddItemButtonDisabled" success type="submit">Добавить</VButton>
+          <FwbButton type="submit" color="green">Сохранить</FwbButton>
         </div>
       </template>
     </FwbModal>

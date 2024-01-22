@@ -15,7 +15,7 @@ export const useStore = defineStore('state', {
     user: {
       isLoggedIn: Boolean(sessionStorage.getItem('token')),
       token: sessionStorage.getItem('token') ?? '',
-      userId: '',
+      userId: sessionStorage.getItem('owner') ?? '',
     },
     selectedItem: {}
   }),
@@ -55,7 +55,7 @@ export const useStore = defineStore('state', {
     },
     async fetchItems() {
       try {
-        const items = await fetch('/api/v1/items', {
+        const items = await fetch('/api/v1/items?limit=50', {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
@@ -67,12 +67,30 @@ export const useStore = defineStore('state', {
     },
     async fetchMyItems() {
       try {
-        const items = await fetch(`/api/v1/items?owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
+        const items = await fetch(`/api/v1/items?limit=30&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
         })
         this.ownerItems = await items.json()
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    async fetchItemById(id: string) {
+      try {
+        const response = await fetch(`/api/v1/items/${id}`, {
+          headers: {
+            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
+          }
+        })
+        const result: Item = await response.json()
+        if (!this.items.items.find((v: Item) => v.id === result.id)) {
+          //@ts-ignore
+          this.items.items.push(result)
+          this.selectItem(result)
+        }
+
       } catch (err) {
         console.error(err)
       }
@@ -93,6 +111,23 @@ export const useStore = defineStore('state', {
         console.error(err)
       }
     },
+    async editItem(itemData: Item) {
+      try {
+        const response = await fetch(`/api/v1/items/${itemData.id}`, {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "X-Auth-Token": this.user.token
+          },
+          body: JSON.stringify(itemData)
+        })
+        const result = await response.json()
+        let editedItem = this.items.items.find(v => v.id === itemData.id)
+        editedItem = result
+      } catch (err) {
+        console.error(err)
+      }
+    },
     addImagesToItem(id: string, images: string[]) {
       try {
         fetch(`/api/v1/items/${id}`, {
@@ -103,33 +138,24 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify({ images })
         })
-        // sessionStorage.clearItem('newItemId')
+        if (sessionStorage.getItem('newItemId') !== null) {
+          sessionStorage.clearItem('newItemId')
+        }
       } catch (err) {
         console.error(err)
       }
     },
-    uploadImages(id: string, files: FileList) {
-      try {
-        console.log(files);
-        const formData = new FormData();
-        Array.from(files).forEach((file) => {
-          const blob = new Blob([file], { type: file.type })
-          console.log(blob);
-          formData.append("file", blob)
-        })
-
-        console.log(formData.has('file'));
-
-        fetch('/api/v1/upload', {
-          method: 'POST',
-          headers: {
-            "X-Auth-Token": this.user.token
-          },
-          body: formData
-        }).then(res => res.json()).then(r => this.addImagesToItem(id, r.Key))
-      } catch (err) {
-        console.error(err)
-      }
+    uploadImage(file: File): Promise<Response> {
+      const formData = new FormData();
+      const blob = new Blob([file], { type: file?.type })
+      formData.append("file", blob)
+      return fetch('/api/v1/upload', {
+        method: 'POST',
+        headers: {
+          "X-Auth-Token": this.user.token
+        },
+        body: formData
+      })
     }
   }
 })
