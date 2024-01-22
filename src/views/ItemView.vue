@@ -3,7 +3,7 @@
 import router from '@/router'
 import { useStore } from '@/stores/store'
 import { FwbButton, FwbCarousel, FwbHeading, FwbP } from 'flowbite-vue'
-import { onMounted, watchEffect, computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { PhotoIcon, ArrowUturnLeftIcon } from '@heroicons/vue/24/solid'
 import VItemForm from '@/components/VItemForm.vue'
@@ -24,11 +24,6 @@ const pictures = () =>
       alt: `item_image_${i}`
     }
   })
-watchEffect(() => {
-  // console.log(user.value.userId, selectedItem.value.owner)
-  // console.log(user.value.userId == selectedItem.value.owner)
-  // console.log(isEdtable.value)
-})
 </script>
 <template>
   <!-- <div class="relative top-0 left-0 px-2">
@@ -37,24 +32,23 @@ watchEffect(() => {
     </FwbButton>
   </div> -->
   <div class="flex flex-col items-center p-2">
-    <FwbCarousel
-      v-if="pictures()"
-      slide
-      :pictures="pictures()"
-      class="w-full text-white lg:w-1/2"
-    />
+    <div v-if="pictures()" class="w-full h-auto lg:w-1/2">
+      <FwbCarousel slide :pictures="pictures()" class="w-auto" />
+    </div>
     <div
       v-else
       class="bg-slate-500 w-full lg:w-1/2 h-[250px] rounded-lg flex justify-center items-center"
     >
       <PhotoIcon class="w-10 h-10 text-white" />
     </div>
-    <FwbHeading tag="h2">{{ selectedItem.title ?? '-' }}</FwbHeading>
-    <FwbHeading tag="h5">{{ selectedItem.price ?? '-' }} Руб</FwbHeading>
-    <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
-    <FwbP>
-      {{ `Товар создан ${new Date(selectedItem.created_on).toLocaleDateString()}` ?? '-' }}
-    </FwbP>
+    <div class="flex flex-col w-full gap-2 lg:w-1/2">
+      <FwbHeading tag="h3">{{ selectedItem.title ?? '-' }}</FwbHeading>
+      <FwbHeading tag="h5">{{ selectedItem.price ?? '-' }} Руб</FwbHeading>
+      <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
+      <FwbP>
+        {{ `Товар создан ${new Date(selectedItem.created_on).toLocaleDateString()}` ?? '-' }}
+      </FwbP>
+    </div>
   </div>
   <div v-show="isEdtable">
     <VItemForm label="Изменить товар" variant="edit" />
