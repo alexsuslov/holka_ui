@@ -25,6 +25,7 @@ const isAddItemButtonDisabled = ref(true)
 const isAddImagesButtonVisible = ref(false)
 const files: Ref<FileList | never[]> = ref([])
 const itemData: Item & { tag?: '' } = reactive({
+  images: selectedItem.value.images ?? [],
   ...selectedItem.value
 })
 
@@ -70,10 +71,15 @@ async function addImage(id: string, file: File, promise: Promise<Response>) {
   await store.editItem(itemData)
 }
 
-async function onSubmit() {
-  await Array.from(files.value).forEach((file) =>
-    addImage(itemData.id, file, store.uploadImage(file))
-  )
+function onSubmit() {
+  console.log(files.value)
+  console.log(itemData)
+  if (Array.from(files.value).length > 0) {
+    Array.from(files.value).forEach((file) => addImage(itemData.id, file, store.uploadImage(file)))
+  } else {
+    store.editItem(itemData)
+  }
+
   emit('close')
 }
 
