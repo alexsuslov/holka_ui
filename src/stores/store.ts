@@ -53,9 +53,9 @@ export const useStore = defineStore('state', {
       sessionStorage.clear()
       router.push('/')
     },
-    async fetchItems() {
+    async fetchItems(limit: number = 50) {
       try {
-        const items = await fetch('/api/v1/items?limit=50', {
+        const items = await fetch(`/api/v1/items?limit=${limit}`, {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
@@ -65,9 +65,9 @@ export const useStore = defineStore('state', {
         console.error(err)
       }
     },
-    async fetchMyItems() {
+    async fetchMyItems(limit: number = 30) {
       try {
-        const items = await fetch(`/api/v1/items?limit=30&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
+        const items = await fetch(`/api/v1/items?limit=${limit}&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
@@ -122,8 +122,7 @@ export const useStore = defineStore('state', {
           body: JSON.stringify(itemData)
         })
         const result = await response.json()
-        let editedItem = this.items.items.find(v => v.id === itemData.id)
-        editedItem = result
+        this.selectItem(result)
       } catch (err) {
         console.error(err)
       }
@@ -138,9 +137,6 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify({ images })
         })
-        if (sessionStorage.getItem('newItemId') !== null) {
-          sessionStorage.clearItem('newItemId')
-        }
       } catch (err) {
         console.error(err)
       }

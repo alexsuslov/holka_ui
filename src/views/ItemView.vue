@@ -3,7 +3,7 @@
 import router from '@/router'
 import { useStore } from '@/stores/store'
 import { FwbButton, FwbCarousel, FwbHeading, FwbP } from 'flowbite-vue'
-import { onMounted, computed } from 'vue'
+import { onMounted, ref, computed, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
 import { PhotoIcon, ArrowUturnLeftIcon } from '@heroicons/vue/24/solid'
 import VItemForm from '@/components/VItemForm.vue'
@@ -16,14 +16,14 @@ const isEdtable = computed(() => user.value.userId == selectedItem.value.owner)
 onMounted(() => {
   store.fetchItemById(route.value.params.id)
 })
-
-const pictures = () =>
+const pictures = computed(() =>
   selectedItem?.value?.images?.map((imageUrl: string, i: number) => {
     return {
       src: encodeURI(`http://192.168.31.100:3000${imageUrl}`),
       alt: `item_image_${i}`
     }
   })
+)
 </script>
 <template>
   <!-- <div class="relative top-0 left-0 px-2">
@@ -32,8 +32,8 @@ const pictures = () =>
     </FwbButton>
   </div> -->
   <div class="flex flex-col items-center p-2">
-    <div v-if="pictures()" class="w-full h-auto lg:w-1/2">
-      <FwbCarousel slide :pictures="pictures()" class="w-auto" />
+    <div v-if="pictures" class="w-full h-auto lg:w-1/2">
+      <FwbCarousel slide :pictures="pictures" class="w-auto" />
     </div>
     <div
       v-else

@@ -7,10 +7,11 @@ import {
   FwbTextarea,
   FwbHeading,
   FwbBadge,
-  FwbP
+  FwbP,
+  FwbImg
 } from 'flowbite-vue'
 import { reactive, watchEffect, ref, type Ref } from 'vue'
-import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
+import { PlusIcon, XMarkIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import { useStore } from '@/stores/store'
 import { storeToRefs } from 'pinia'
 import type { Item } from '@/stores/interfaces'
@@ -24,12 +25,6 @@ const isAddItemButtonDisabled = ref(true)
 const isAddImagesButtonVisible = ref(false)
 const files: Ref<FileList | never[]> = ref([])
 const itemData: Item & { tag?: '' } = reactive({
-  title: '',
-  tag: '',
-  tags: [],
-  price: NaN,
-  info: '',
-  images: [],
   ...selectedItem.value
 })
 
@@ -46,6 +41,12 @@ function deleteTag(tag: string) {
   const newTags = itemData.tags?.filter((v) => v !== tag)
   itemData.tags = newTags
 }
+
+function handleDeleteImage(image: string) {
+  const newImages = itemData.images?.filter((v) => v !== image)
+  itemData.images = newImages
+}
+
 function onFileChanged($event: Event) {
   const target = $event.target as HTMLInputElement
   if (target && target.files) {
@@ -58,22 +59,21 @@ function handleAddImages() {
   delete itemData.updated_on
   isAddImagesButtonVisible.value = true
   isAddImagesButtonDisabled.value = true
-  store.editItem(itemData)
 }
-const itemImages: string[] = []
 
 async function addImage(id: string, file: File, promise: Promise<Response>) {
   const res = await promise
   const result = await res.json()
   const { Key } = result
-  itemImages.push(`/media/${Key}/${file.name}`)
-  console.log(itemImages)
-
-  store.addImagesToItem(id, itemImages)
+  itemData.images.push(`/media/${Key}/${file.name}`)
+  await store.addImagesToItem(id, itemData.images)
+  await store.editItem(itemData)
 }
 
-function onSubmit() {
-  Array.from(files.value).forEach((file) => addImage(itemData.id, file, store.uploadImage(file)))
+async function onSubmit() {
+  await Array.from(files.value).forEach((file) =>
+    addImage(itemData.id, file, store.uploadImage(file))
+  )
   emit('close')
 }
 
@@ -143,6 +143,25 @@ watchEffect(() => {
               {{ tag }}
               <XMarkIcon class="w-5 h-5 text-red-500" />
             </FwbBadge>
+          </div>
+          <div class="flex flex-col gap-2">
+            <FwbHeading tag="h5">Загруженные фотографии</FwbHeading>
+            <div class="flex gap-4">
+              <div
+                v-for="image in itemData.images"
+                :key="image"
+                class="flex items-center justify-center"
+              >
+                <TrashIcon
+                  class="absolute w-5 h-5 text-red-500"
+                  @click="handleDeleteImage(image)"
+                />
+                <FwbImg
+                  :src="encodeURI(`http://192.168.31.100:3000${image}`)"
+                  class="w-[50px] h-[50px] lg:w-auto lg:h-[100px]"
+                />
+              </div>
+            </div>
           </div>
           <div>
             <FwbButton v-if="!isAddImagesButtonDisabled" type="button" @click="handleAddImages"

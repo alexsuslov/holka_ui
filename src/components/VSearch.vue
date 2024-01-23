@@ -20,7 +20,7 @@ const searchValue = defineModel<string>()
       />
     </svg>
     <input
-      placeholder="search"
+      placeholder="Поиск"
       v-model="searchValue"
       class="w-full bg-slate-700 dark:bg-slate-100 focus:outline-none"
       @keypress.enter="emit('onHandlePress', searchValue)"
