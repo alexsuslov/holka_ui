@@ -72,8 +72,6 @@ async function addImage(id: string, file: File, promise: Promise<Response>) {
 }
 
 function onSubmit() {
-  console.log(files.value)
-  console.log(itemData)
   if (Array.from(files.value).length > 0) {
     Array.from(files.value).forEach((file) => addImage(itemData.id, file, store.uploadImage(file)))
   } else {

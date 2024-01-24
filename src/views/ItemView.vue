@@ -5,8 +5,9 @@ import { useStore } from '@/stores/store'
 import { FwbButton, FwbCarousel, FwbHeading, FwbP } from 'flowbite-vue'
 import { onMounted, ref, computed, watchEffect } from 'vue'
 import { storeToRefs } from 'pinia'
-import { PhotoIcon, ArrowUturnLeftIcon } from '@heroicons/vue/24/solid'
+import { PhotoIcon, ArrowUturnLeftIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import VItemForm from '@/components/VItemForm.vue'
+import VButton from '../components/VButton.vue'
 
 const store = useStore()
 const { selectedItem, user } = storeToRefs(store)
@@ -24,6 +25,10 @@ const pictures = computed(() =>
     }
   })
 )
+function handleDelete(id: string) {
+  store.deleteItem(id)
+  router.push('/')
+}
 </script>
 <template>
   <!-- <div class="relative top-0 left-0 px-2">
@@ -51,6 +56,10 @@ const pictures = computed(() =>
     </div>
   </div>
   <div v-show="isEdtable">
+    <VButton class="fixed bottom-0 left-0 m-4" danger @click="handleDelete(selectedItem.id)">
+      Удалить товар
+      <TrashIcon class="w-5 h-5" />
+    </VButton>
     <VItemForm label="Изменить товар" variant="edit" />
   </div>
 </template>

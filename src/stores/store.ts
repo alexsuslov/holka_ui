@@ -53,9 +53,9 @@ export const useStore = defineStore('state', {
       sessionStorage.clear()
       router.push('/')
     },
-    async fetchItems(limit: number = 50) {
+    async fetchItems(limit: number = 30) {
       try {
-        const items = await fetch(`/api/v1/items?limit=${limit}`, {
+        const items = await fetch(`/api/v1/items?limit=${limit}&skip=${0}`, {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
@@ -67,7 +67,7 @@ export const useStore = defineStore('state', {
     },
     async fetchMyItems(limit: number = 30) {
       try {
-        const items = await fetch(`/api/v1/items?limit=${limit}&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
+        const items = await fetch(`/api/v1/items?limit=${limit}&skip=${this.ownerItems.count}&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
           headers: {
             "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
           }
@@ -123,6 +123,18 @@ export const useStore = defineStore('state', {
         })
         const result = await response.json()
         this.selectItem(result)
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    deleteItem(id: string) {
+      try {
+        fetch(`/api/v1/items/${id}`, {
+          method: 'DELETE',
+          headers: {
+            "X-Auth-Token": this.user.token
+          },
+        }).then(() => this.fetchItems())
       } catch (err) {
         console.error(err)
       }
