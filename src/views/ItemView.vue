@@ -36,27 +36,23 @@ function handleDelete(id: string) {
       <FwbHeading tag="h2">Additional Info</FwbHeading>
     </div>
     <div class="flex flex-col col-span-2">
-      <div v-if="pictures">
-        <FwbCarousel :pictures="pictures" />
+      <div v-if="pictures" class="rounded-lg bg-slate-500">
+        <FwbCarousel :pictures="pictures" class="p-12 lg:p-16 min-h-[320px]" />
       </div>
       <div
         v-else
-        class="bg-slate-500 w-full lg:w-1/2 h-[250px] rounded-lg flex justify-center items-center"
+        class="bg-slate-500 w-full min-h-[320px] rounded-lg flex justify-center items-center"
       >
         <PhotoIcon class="w-10 h-10 text-white" />
       </div>
       <div class="flex flex-col w-full gap-2">
-        <div class="flex flex-row justify-between">
-          <div>
-            <FwbHeading tag="h2">{{ selectedItem.title ?? '-' }}</FwbHeading>
-            <FwbHeading tag="h4">{{ selectedItem.price ?? '-' }} Руб</FwbHeading>
-          </div>
-          <div>
-            <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
-            <FwbP class="text-xs">
-              {{ `Товар создан ${new Date(selectedItem.created_on).toLocaleDateString()}` ?? '-' }}
-            </FwbP>
-          </div>
+        <div>
+          <FwbHeading tag="h2">{{ selectedItem.title ?? '-' }}</FwbHeading>
+          <FwbHeading tag="h4">{{ selectedItem.price ?? '-' }} Руб</FwbHeading>
+          <FwbP>{{ 'Санкт-Петербург, Россия' }}</FwbP>
+          <FwbP class="text-xs">
+            {{ `Товар создан ${new Date(selectedItem.created_on).toLocaleDateString()}` ?? '-' }}
+          </FwbP>
         </div>
         <FwbHeading tag="h6">Описание</FwbHeading>
         <FwbP>{{ selectedItem.info ?? '-' }}</FwbP>
