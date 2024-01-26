@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useStore } from '@/stores/store'
-import { FwbButton, FwbCarousel, FwbHeading, FwbP } from 'flowbite-vue'
-import { onMounted, ref, computed, watchEffect } from 'vue'
+import { FwbCarousel, FwbHeading, FwbP } from 'flowbite-vue'
+import { onMounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { PhotoIcon, ArrowUturnLeftIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import { PhotoIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import VItemForm from '@/components/VItemForm.vue'
 import VButton from '@/components/VButton.vue'
 import VComments from '@/components/VComments.vue'
-import VSpacer from '@/components/VSpacer.vue'
 
 const store = useStore()
 const { selectedItem, user } = storeToRefs(store)
