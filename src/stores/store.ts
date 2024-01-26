@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { IState, Item } from './interfaces'
+import type { IComment, IState, Item } from './interfaces'
 import router from '@/router'
 
 export const useStore = defineStore('state', {
@@ -13,16 +13,17 @@ export const useStore = defineStore('state', {
       items: []
     },
     user: {
-      isLoggedIn: Boolean(sessionStorage.getItem('token')),
+      isLoggedIn: Boolean(sessionStorage.getItem('token')) ?? false,
       token: sessionStorage.getItem('token') ?? '',
       userId: sessionStorage.getItem('owner') ?? '',
     },
     selectedItem: {}
   }),
   getters: {
-    isLoggedIn: (state) => { return state.user.isLoggedIn },
-    getItemsLength: (state) => { return state.items.count },
-    getOwnerItemsLength: (state) => { return state.ownerItems.count }
+    isLoggedIn: (state) => state.user.isLoggedIn,
+    getItemsLength: (state) => state.items.count,
+    getOwnerItemsLength: (state) => state.ownerItems.count,
+    getItemComments: (state) => state.selectedItem
   },
   actions: {
     selectItem(item: Item) {
@@ -57,7 +58,7 @@ export const useStore = defineStore('state', {
       try {
         const items = await fetch(`/api/v1/items?limit=${limit}&skip=${0}`, {
           headers: {
-            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
+            "X-Auth-Token": this.user.token
           }
         })
         this.items = await items.json()
@@ -67,9 +68,9 @@ export const useStore = defineStore('state', {
     },
     async fetchMyItems(limit: number = 30) {
       try {
-        const items = await fetch(`/api/v1/items?limit=${limit}&skip=${this.ownerItems.count}&owner=${sessionStorage.getItem('owner') ?? this.user.userId}`, {
+        const items = await fetch(`/api/v1/items?limit=${limit}&skip=${0}&owner=${this.user.userId}`, {
           headers: {
-            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
+            "X-Auth-Token": this.user.token
           }
         })
         this.ownerItems = await items.json()
@@ -81,7 +82,7 @@ export const useStore = defineStore('state', {
       try {
         const response = await fetch(`/api/v1/items/${id}`, {
           headers: {
-            "X-Auth-Token": this.user.token ?? sessionStorage.getItem('token')
+            "X-Auth-Token": this.user.token
           }
         })
         const result: Item = await response.json()
@@ -97,7 +98,7 @@ export const useStore = defineStore('state', {
     },
     async addItem(itemData: Omit<Item, "views" | "id" | "images">) {
       try {
-        const result = await fetch('/api/v1/items', {
+        await fetch('/api/v1/items', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -105,8 +106,7 @@ export const useStore = defineStore('state', {
           },
           body: JSON.stringify(itemData)
         })
-        const r = await result.json()
-        sessionStorage.setItem('newItemId', r.id)
+        await this.fetchMyItems()
       } catch (err) {
         console.error(err)
       }
@@ -127,14 +127,15 @@ export const useStore = defineStore('state', {
         console.error(err)
       }
     },
-    deleteItem(id: string) {
+    async deleteItem(id: string) {
       try {
-        fetch(`/api/v1/items/${id}`, {
+        await fetch(`/api/v1/items/${id}`, {
           method: 'DELETE',
           headers: {
             "X-Auth-Token": this.user.token
           },
-        }).then(() => this.fetchItems())
+        })
+        await this.fetchItems()
       } catch (err) {
         console.error(err)
       }
@@ -164,6 +165,20 @@ export const useStore = defineStore('state', {
         },
         body: formData
       })
+    },
+    async fetchItemComments(itemId: string) {
+      try {
+        const response = await fetch(`/api/v1/comments?item=${itemId}`, {
+          method: 'GET',
+          headers: {
+            "X-Auth-Token": this.user.token
+          },
+        })
+        const result: { count: number, items: IComment[] } = await response.json()
+        this.selectItem({ ...this.selectedItem, comments: result } as Item)
+      } catch (err) {
+        console.error(err)
+      }
     }
   }
 })

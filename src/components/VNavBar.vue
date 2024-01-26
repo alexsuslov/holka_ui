@@ -9,7 +9,7 @@ const loggedIn = true
 </script>
 <template>
   <nav
-    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-2 bg-white border-b border-slate-500 dark:bg-slate-900"
+    class="max-w-[1920px] hr:max-w-full sticky top-0 left-0 right-0 z-1 flex items-center justify-between w-full p-2 border-b border-slate-500 dark:bg-slate-900"
   >
     <RouterLink to="/">
       <FwbButton color="default">Home</FwbButton>
@@ -24,6 +24,9 @@ const loggedIn = true
         </RouterLink>
         <RouterLink to="/my_items">
           <FwbListGroupItem hover>Мои товары</FwbListGroupItem>
+        </RouterLink>
+        <RouterLink to="/chats">
+          <FwbListGroupItem hover>Мои чаты</FwbListGroupItem>
         </RouterLink>
       </FwbListGroup>
     </FwbDropdown>

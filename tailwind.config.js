@@ -10,6 +10,9 @@ module.exports = {
   darkMode: "media",
   theme: {
     extend: {
+      screens: {
+        'hr': '2000px'
+      }
     },
   },
   variants: {

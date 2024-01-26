@@ -25,7 +25,7 @@ function handleItemClick(item: Item) {
   </div>
   <div
     v-else
-    class="grid justify-center gap-4 p-2 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2"
+    class="grid justify-center gap-4 p-2 hr:grid-cols-10 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2"
   >
     <VItem
       v-for="item in store.items.items"

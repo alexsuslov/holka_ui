@@ -31,7 +31,6 @@ const itemData: Item & { tag?: string } = reactive({
   info: '',
   images: []
 })
-
 function handleAddTag() {
   if (itemData.tag) {
     if (!itemData.tags?.includes(itemData.tag)) {
@@ -40,28 +39,23 @@ function handleAddTag() {
     }
   }
 }
-
 function deleteTag(tag: string) {
   const newTags = itemData.tags?.filter((v) => v !== tag)
   itemData.tags = newTags
 }
-
 function onFileChanged($event: Event) {
   const target = $event.target as HTMLInputElement
   if (target && target.files) {
     files.value = target.files
   }
 }
-
 function handleAddImages() {
   delete itemData.tag
   isAddImagesButtonVisible.value = true
   isAddImagesButtonDisabled.value = true
   store.addItem(itemData)
 }
-
 const itemImages: string[] = []
-
 async function addImage(id: string, file: File, promise: Promise<Response>) {
   const res = await promise
   const result = await res.json()
@@ -69,7 +63,6 @@ async function addImage(id: string, file: File, promise: Promise<Response>) {
   itemImages.push(`/media/${Key}/${file.name}`)
   store.addImagesToItem(id, itemImages)
 }
-
 function onSubmit() {
   if (sessionStorage.getItem('newItemId')) {
     Array.from(files.value).forEach((file: File) =>
@@ -100,7 +93,7 @@ watchEffect(() => {
 })
 </script>
 <template>
-  <form id="my-form" @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit">
     <FwbModal @close="emit('close')" size="5xl">
       <template #header>
         <FwbHeading tag="h4">Добавить товар</FwbHeading>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-//@ts-nocheck
 import {
   FwbButton,
   FwbInput,
@@ -24,9 +23,9 @@ const isAddImagesButtonDisabled = ref(true)
 const isAddItemButtonDisabled = ref(true)
 const isAddImagesButtonVisible = ref(false)
 const files: Ref<FileList | never[]> = ref([])
-const itemData: Item & { tag?: '' } = reactive({
-  images: selectedItem.value.images ?? [],
-  ...selectedItem.value
+const itemData: Item = reactive({
+  ...selectedItem.value,
+  images: selectedItem.value.images ?? []
 })
 
 function handleAddTag() {
@@ -37,31 +36,26 @@ function handleAddTag() {
     }
   }
 }
-
 function deleteTag(tag: string) {
   const newTags = itemData.tags?.filter((v) => v !== tag)
   itemData.tags = newTags
 }
-
 function handleDeleteImage(image: string) {
   const newImages = itemData.images?.filter((v) => v !== image)
   itemData.images = newImages
 }
-
 function onFileChanged($event: Event) {
   const target = $event.target as HTMLInputElement
   if (target && target.files) {
     files.value = target.files
   }
 }
-
 function handleAddImages() {
   delete itemData.tag
   delete itemData.updated_on
   isAddImagesButtonVisible.value = true
   isAddImagesButtonDisabled.value = true
 }
-
 async function addImage(id: string, file: File, promise: Promise<Response>) {
   const res = await promise
   const result = await res.json()
@@ -70,23 +64,21 @@ async function addImage(id: string, file: File, promise: Promise<Response>) {
   await store.addImagesToItem(id, itemData.images)
   await store.editItem(itemData)
 }
-
 function onSubmit() {
-  if (Array.from(files.value).length > 0) {
+  if (Array.from(files.value)?.length > 0) {
     Array.from(files.value).forEach((file) => addImage(itemData.id, file, store.uploadImage(file)))
   } else {
     store.editItem(itemData)
   }
-
   emit('close')
 }
 
 watchEffect(() => {
   if (
-    itemData.title.length > 0 &&
+    itemData.title?.length > 0 &&
     itemData.price > 0 &&
-    itemData.tags.length > 0 &&
-    itemData.info.length > 0
+    itemData.tags?.length > 0 &&
+    itemData.info?.length > 0
   ) {
     isAddImagesButtonDisabled.value = false
   } else {
@@ -94,7 +86,7 @@ watchEffect(() => {
   }
 })
 watchEffect(() => {
-  if (files.value.length > 0) {
+  if (files.value?.length > 0) {
     isAddItemButtonDisabled.value = false
   } else {
     isAddItemButtonDisabled.value = true
@@ -102,7 +94,7 @@ watchEffect(() => {
 })
 </script>
 <template>
-  <form id="my-form" @submit.prevent="onSubmit">
+  <form @submit.prevent="onSubmit">
     <FwbModal @close="emit('close')" size="5xl">
       <template #header>
         <FwbHeading tag="h4">Изменить товар</FwbHeading>
@@ -150,7 +142,7 @@ watchEffect(() => {
           </div>
           <div class="flex flex-col gap-2">
             <FwbHeading tag="h5">Загруженные фотографии</FwbHeading>
-            <div class="flex gap-4">
+            <div class="flex flex-wrap gap-4">
               <div
                 v-for="image in itemData.images"
                 :key="image"
@@ -162,7 +154,7 @@ watchEffect(() => {
                 />
                 <FwbImg
                   :src="encodeURI(`http://192.168.31.100:3000${image}`)"
-                  class="w-[50px] h-[50px] lg:w-auto lg:h-[100px]"
+                  class="w-[300px] lg:w-auto lg:h-[100px]"
                 />
               </div>
             </div>

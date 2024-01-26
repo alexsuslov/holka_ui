@@ -1,7 +1,7 @@
 export interface Item {
     id: string
-    title: string,
-    images: string[] | [] | null,
+    title: string
+    images: string[] | [] | null
     info: string
     price: number
     tags: string[]
@@ -9,6 +9,18 @@ export interface Item {
     created_on?: string
     updated_on?: string
     owner: string | null
+    comments?: { count: number, items: IComment[] }
+}
+
+export interface IComment {
+    id: string
+    images: [] | null
+    item: string
+    owner: string
+    text: string
+    to: string
+    updated_on: string
+    created_on: string
 }
 
 export interface IState {
@@ -21,9 +33,9 @@ export interface IState {
         items: Item[] | []
     },
     user: {
-        isLoggedIn: boolean,
-        token: string,
+        isLoggedIn: boolean
+        token: string
         userId?: string
     },
-    selectedItem: Item | {}
+    selectedItem: Item | Record<string, any>
 }

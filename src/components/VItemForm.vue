@@ -5,7 +5,7 @@ import VEditItemModal from './VEditItemModal.vue'
 import { PlusIcon, PencilSquareIcon } from '@heroicons/vue/24/solid'
 import VButton from './VButton.vue'
 
-defineProps(['label', 'variant'])
+defineProps<{ label: string; variant: 'edit' | 'add' }>()
 
 const isShowModal = ref<boolean>(false)
 
@@ -19,7 +19,7 @@ function closeModal() {
 }
 </script>
 <template>
-  <VButton class="fixed bottom-0 right-0 m-4" success @click="showModal">
+  <VButton success @click="showModal" class="fixed bottom-0 right-0 m-2">
     {{ label }}
     <PlusIcon v-if="variant !== 'edit'" class="w-5 h-5" />
     <PencilSquareIcon v-else class="w-5 h-5" />

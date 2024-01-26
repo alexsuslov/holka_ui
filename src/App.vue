@@ -15,9 +15,7 @@ const { isLoggedIn } = storeToRefs(store)
   </div>
   <div v-else>
     <VNavBar />
-    <div class="mt-20">
-      <RouterView />
-    </div>
+    <RouterView />
   </div>
 </template>
 
